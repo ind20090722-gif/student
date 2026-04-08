@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Entry Port | Barcode Scanner</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f7f9;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        #reader {
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            border: none !important;
+            margin-bottom: 20px;
+        }
+
+        .status-box {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .success { background: #d4edda; color: #155724; display: block; }
+        .error { background: #f8d7da; color: #721c24; display: block; }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover { background: #2980b9; }
+
+        .manual-entry {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 style="margin-top:0;">📷 ස්කෑන් කරන්න</h2>
+        <p style="color: #666;">Scan your ID Barcode</p>
+
+        <div id="reader"></div>
+
+        <div id="result-message" class="status-box"></div>
+
+        <div class="manual-entry">
+            <p>නැතිනම් අතින් ඇතුළත් කරන්න</p>
+            <input type="text" id="manualID" placeholder="Enter ID manually...">
+            <button onclick="verifyID(document.getElementById('manualID').value)">Check ID</button>
+        </div>
+    </div>
+
+    <script>
+        // ශිෂ්‍ය දත්ත පද්ධතිය
+        const studentDatabase = {
+            "1113-ekjyd675ddu": "ශිෂ්‍යයා: නිමල් පෙරේරා",
+            "2207-mytx6x8ve5": "ශිෂ්‍යයා: කසුන් රාජපක්ෂ",
+            "4567-jhdbyg5djdn887": "ශිෂ්‍යයා: අයේෂා කුමාරි"
+        };
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // ස්කෑන් කළ පසු ක්‍රියාත්මක වන කොටස
+            verifyID(decodedText);
+            
+            // එක දිගට ස්කෑන් වීම නැවැත්වීමට (විකල්ප)
+            // html5QrcodeScanner.clear(); 
+        }
+
+        function verifyID(id) {
+            const msgBox = document.getElementById('result-message');
+            
+            if (studentDatabase[id]) {
+                msgBox.innerHTML = "✅ සාර්ථකයි! <br>" + studentDatabase[id];
+                msgBox.className = "status-box success";
+                
+                // ඇතුළත් වූ පසු ශබ්දයක් ලබා දීමට (Optional)
+                let audio = new Audio('https://www.soundjay.com/buttons/beep-07a.mp3');
+                audio.play();
+            } else {
+                msgBox.innerHTML = "❌ අවලංගු හැඳුනුම්පතකි!";
+                msgBox.className = "status-box error";
+            }
+        }
+
+        // Scanner එක ක්‍රියාත්මක කිරීම
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 10, qrbox: 250 }
+        );
+        html5QrcodeScanner.render(onScanSuccess);
+    </script>
+
+</body>
+</html>

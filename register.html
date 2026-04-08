@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ශිෂ්‍ය ලියාපදිංචිය | Student Registration</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; padding: 20px; }
+        .form-container { 
+            background: white; max-width: 600px; margin: auto; 
+            padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); 
+        }
+        h2 { text-align: center; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #34495e; }
+        input, select, textarea { 
+            width: 100%; padding: 10px; border: 1px solid #ccc; 
+            border-radius: 8px; box-sizing: border-box; font-size: 15px;
+        }
+        .row { display: flex; gap: 10px; }
+        .btn-submit { 
+            background: #27ae60; color: white; border: none; padding: 15px; 
+            width: 100%; border-radius: 8px; font-size: 18px; cursor: pointer; margin-top: 10px;
+        }
+        .btn-submit:hover { background: #219150; }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; margin-top: 10px; }
+        .checkbox-group input { width: auto; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>🎓 ශිෂ්‍ය ලියාපදිංචිය</h2>
+    <form id="regForm">
+        <div class="row">
+            <div class="form-group" style="flex:1;">
+                <label>First Name (මුල් නම)</label>
+                <input type="text" id="fname" placeholder="Enter your First Name" required>
+            </div>
+            <div class="form-group" style="flex:1;">
+                <label>Last Name (වාසගම)</label>
+                <input type="text" id="lname" placeholder="Enter your Last Name" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Email (විද්‍යුත් තැපෑල)</label>
+            <input type="email" id="email" placeholder="Enter your Email" required>
+        </div>
+
+        <div class="row">
+            <div class="form-group" style="flex:1;">
+                <label>Mobile (දුරකථන)</label>
+                <input type="text" id="mobile" placeholder="0777123456" required>
+            </div>
+            <div class="form-group" style="flex:1;">
+                <label>WhatsApp No</label>
+                <input type="text" id="whatsapp" placeholder="WhatsApp Number" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group" style="flex:1;">
+                <label>Telegram No</label>
+                <input type="text" id="telegram" placeholder="Telegram Number">
+            </div>
+            <div class="form-group" style="flex:1;">
+                <label>Gender (ස්ත්‍රී/පුරුෂ)</label>
+                <select id="gender">
+                    <option value="Male">Male (පුරුෂ)</option>
+                    <option value="Female">Female (ස්ත්‍රී)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group" style="flex:1;">
+                <label>Date of Birth (උපන් දිනය)</label>
+                <input type="date" id="dob">
+            </div>
+            <div class="form-group" style="flex:1;">
+                <label>O/L Year (විභාග වර්ෂය)</label>
+                <input type="number" id="olyear" placeholder="Ex: 2024">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Address (ලිපිනය)</label>
+            <textarea id="address" rows="3" placeholder="Enter your address"></textarea>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="terms" required>
+            <label for="terms">I agree to privacy policy & terms</label>
+        </div>
+
+        <button type="submit" class="btn-submit">ලියාපදිංචි වන්න (Register Now)</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('regForm').onsubmit = function(e) {
+        e.preventDefault();
+        
+        // පෝරමයේ දත්ත එක් රැස් කිරීම
+        const studentData = {
+            fname: document.getElementById('fname').value,
+            lname: document.getElementById('lname').value,
+            email: document.getElementById('email').value,
+            mobile: document.getElementById('mobile').value,
+            whatsapp: document.getElementById('whatsapp').value,
+            gender: document.getElementById('gender').value,
+            olyear: document.getElementById('olyear').value,
+            dob: document.getElementById('dob').value,
+            address: document.getElementById('address').value,
+            studentID: "", // admission.html හිදී ජනනය වේ
+            secretCode: "" // admission.html හිදී ජනනය වේ
+        };
+
+        // LocalStorage එකට දත්ත ඇතුළත් කිරීම
+        let students = JSON.parse(localStorage.getItem('students')) || [];
+        students.push(studentData);
+        localStorage.setItem('students', JSON.stringify(students));
+
+        // සාර්ථක පණිවිඩය සහ යොමු කිරීම
+        alert("ලියාපදිංචිය සාර්ථකයි! (Registration Successful)");
+        window.location.href = "admission.html"; 
+    };
+</script>
+
+</body>
+</html>

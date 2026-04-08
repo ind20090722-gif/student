@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ශිෂ්‍ය පිවිසුම | Student Entry Port</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 350px;
+            text-align: center;
+        }
+
+        .icon-header {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1.5rem;
+        }
+
+        p {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .btn-enter {
+            width: 100%;
+            padding: 12px;
+            background: #27ae60;
+            border: none;
+            color: white;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-enter:hover {
+            background: #219150;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        .success { color: #27ae60; }
+        .error { color: #e74c3c; }
+
+        .barcode-visual {
+            margin-top: 20px;
+            opacity: 0.5;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="icon-header">🎓</div>
+        <h2>ශිෂ්‍ය පිවිසුම</h2>
+        <p>Student Entry Port</p>
+
+        <div class="input-group">
+            <label>Student ID / Barcode</label>
+            <input type="text" id="studentID" placeholder="Scan or type ID here..." autofocus>
+        </div>
+
+        <button class="btn-enter" onclick="checkLogin()">ඇතුළු වන්න (Enter)</button>
+
+        <div id="message"></div>
+
+        <div class="barcode-visual">
+            <p>📷 Barcode Scanner Active</p>
+            <span>|| |||| | ||| || |||| |</span>
+        </div>
+    </div>
+
+    <script>
+        // ශිෂ්‍ය දත්ත පද්ධතිය (Database)
+        const studentDatabase = {
+            "1113-ekjyd675ddu": "ශිෂ්‍යයා පද්ධතියට ඇතුළත් විය (Student 1113)",
+            "2207-mytx6x8ve5": "ශිෂ්‍යයා පද්ධතියට ඇතුළත් විය (Student 2207)",
+            "4567-jhdbyg5djdn887": "ශිෂ්‍යයා පද්ධතියට ඇතුළත් විය (Student 4567)"
+        };
+
+        const inputField = document.getElementById('studentID');
+        const messageDiv = document.getElementById('message');
+
+        function checkLogin() {
+            const id = inputField.value.trim();
+
+            if (studentDatabase[id]) {
+                messageDiv.innerHTML = "✅ " + studentDatabase[id];
+                messageDiv.className = "success";
+                inputField.style.borderColor = "#27ae60";
+                
+                // ඇතුළත් වූ පසු වෙනත් පිටුවකට යාමට අවශ්‍ය නම්:
+                // setTimeout(() => { window.location.href = "dashboard.html"; }, 1500);
+            } else {
+                messageDiv.innerHTML = "❌ අවලංගු හැඳුනුම්පතකි (Invalid ID)";
+                messageDiv.className = "error";
+                inputField.style.borderColor = "#e74c3c";
+            }
+            
+            // නැවත ස්කෑන් කිරීමට පහසු වීමට input එක හිස් කරයි
+            inputField.value = "";
+            inputField.focus();
+        }
+
+        // Enter key එක එබූ විට ස්වයංක්‍රීයව පරීක්ෂා කිරීම (Barcode scanner එකට මෙය වැදගත් වේ)
+        inputField.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                checkLogin();
+            }
+        });
+    </script>
+
+</body>
+</html>

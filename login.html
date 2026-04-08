@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ශිෂ්‍ය පිවිසුම | Student Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h2 { color: #2d3436; margin-bottom: 25px; }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #636e72;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dfe6e9;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #6c5ce7;
+            outline: none;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .btn-login:hover { background: #5846d1; }
+
+        #error-msg {
+            color: #d63031;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .info-note {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #b2bec3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>ශිෂ්‍ය පිවිසුම 🔑</h2>
+        
+        <div class="input-group">
+            <label>WhatsApp Number</label>
+            <input type="text" id="login-whatsapp" placeholder="0771234567">
+        </div>
+
+        <div class="input-group">
+            <label>Student ID</label>
+            <input type="text" id="login-id" placeholder="STD-2026-XXXX">
+        </div>
+
+        <div class="input-group">
+            <label>Secret Code</label>
+            <input type="password" id="login-secret" placeholder="******">
+        </div>
+
+        <button class="btn-login" onclick="attemptLogin()">Log In</button>
+
+        <p id="error-msg">අවලංගු දත්ත ඇතුළත් කිරීමකි. කරුණාකර නැවත උත්සාහ කරන්න.</p>
+
+        <p class="info-note">ඇතුළු වීමට ඔබගේ Admission පත්‍රයේ ඇති දත්ත භාවිතා කරන්න.</p>
+    </div>
+
+    <script>
+        function attemptLogin() {
+            const whatsapp = document.getElementById('login-whatsapp').value.trim();
+            const studentId = document.getElementById('login-id').value.trim();
+            const secret = document.getElementById('login-secret').value.trim();
+            const errorMsg = document.getElementById('error-msg');
+
+            // LocalStorage එකෙන් සියලුම ශිෂ්‍ය දත්ත ලබා ගැනීම
+            const students = JSON.parse(localStorage.getItem('students')) || [];
+
+            // ඇතුළත් කළ දත්ත වලට ගැලපෙන ශිෂ්‍යයෙකු සිටීදැයි සෙවීම
+            const user = students.find(s => 
+                s.whatsapp === whatsapp && 
+                s.studentID === studentId && 
+                s.secretCode === secret
+            );
+
+            if (user) {
+                // සාර්ථක නම් ශිෂ්‍යයාගේ නම Session එකක තබා home.html වෙත යැවීම
+                sessionStorage.setItem('loggedInUser', user.fname);
+                window.location.href = "home.html";
+            } else {
+                // අසාර්ථක නම් වැරදි පණිවිඩය පෙන්වීම
+                errorMsg.style.display = "block";
+                errorMsg.innerText = "❌ දත්ත වැරදියි! නැවත පරීක්ෂා කරන්න.";
+            }
+        }
+    </script>
+
+</body>
+</html>

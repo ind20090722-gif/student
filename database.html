@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ශිෂ්‍ය දත්ත පද්ධතිය | Student Database</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 3px solid #27ae60;
+            padding-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        tr:hover { background-color: #f1f1f1; }
+
+        .id-badge {
+            background-color: #e67e22;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .secret-badge {
+            font-family: monospace;
+            background: #34495e;
+            color: #ecf0f1;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-add { background-color: #3498db; }
+        .btn-clear { background-color: #e74c3c; }
+
+        @media (max-width: 600px) {
+            table, thead, tbody, th, td, tr { display: block; }
+            th { display: none; }
+            tr { margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; }
+            td { text-align: right; position: relative; padding-left: 50%; }
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                font-weight: bold;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>📊 ශිෂ්‍ය දත්ත කළමනාකරණය</h1>
+
+        <div class="controls">
+            <a href="register.html" class="btn btn-add">+ නව ශිෂ්‍යයෙක්</a>
+            <button class="btn btn-clear" onclick="clearData()">සියල්ල මකන්න (Clear All)</button>
+        </div>
+
+        <table id="studentTable">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Secret Code</th>
+                    <th>Full Name</th>
+                    <th>WhatsApp</th>
+                    <th>O/L Year</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        function loadData() {
+            const tableBody = document.getElementById('tableBody');
+            const students = JSON.parse(localStorage.getItem('students')) || [];
+
+            if (students.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">දත්ත කිසිවක් හමු නොවීය.</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = ''; // පැරණි දත්ත ඉවත් කිරීම
+
+            students.forEach(s => {
+                const row = `
+                    <tr>
+                        <td data-label="Student ID"><span class="id-badge">${s.studentID || 'පෙන්ඩින්'}</span></td>
+                        <td data-label="Secret Code"><span class="secret-badge">${s.secretCode || '****'}</span></td>
+                        <td data-label="Full Name">${s.fname} ${s.lname}</td>
+                        <td data-label="WhatsApp">${s.whatsapp}</td>
+                        <td data-label="O/L Year">${s.olyear || '-'}</td>
+                        <td data-label="Email">${s.email}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function clearData() {
+            if (confirm("ඔබට විශ්වාසද? සියලුම දත්ත මැකී යනු ඇත!")) {
+                localStorage.removeItem('students');
+                loadData();
+            }
+        }
+
+        // පිටුව Load වන විට දත්ත පෙන්වීම
+        window.onload = loadData;
+    </script>
+
+</body>
+</html>
